@@ -1,9 +1,10 @@
 import mysql from "mysql2";
 
+// Imports environment variables from a .env file into process.env
 import dotenv from "dotenv";
 dotenv.config();
 
-//Create a connection pool
+// Creates a connection pool
 const pool = mysql
   .createPool({
     host: process.env.MYSQL_HOST,

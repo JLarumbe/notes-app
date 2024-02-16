@@ -1,5 +1,6 @@
 import express from "express";
 
+// Imports environment variables from a .env file into process.env
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -26,8 +27,10 @@ app.use((err, req, res, next) => {
   next();
 });
 
+// Add the notes router
 app.use("/notes", notesRouter);
 
+// Start the server
 app.listen(process.env.PORT, () => {
   console.log(`Server started on http://localhost:${process.env.PORT}`);
 });

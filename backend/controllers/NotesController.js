@@ -1,16 +1,24 @@
 import pool from "../database.js";
 
-//Function to get all notes
+// Function to get all notes
 const getNotes = async (req, res) => {
   const [rows] = await pool.query("SELECT * FROM notes");
   res.send(rows);
 };
 
-//Function to get a single note
+// Function to get a single note
 const getNote = async (req, res) => {
   const { id } = req.params;
 
-  //Prepared statement to prevent SQL injection
+  // Whats a better name for this variable
+
+  const isNote = await getNoteById(id);
+
+  if (!isNote) {
+    return res.status(404).send({ message: "Note not found" });
+  }
+
+  // Prepared statement to prevent SQL injection
   const [note] = await pool.query(
     `
     SELECT * 
@@ -22,7 +30,7 @@ const getNote = async (req, res) => {
   res.send(note[0]);
 };
 
-//Function to create a note
+// Function to create a note
 const createNote = async (req, res) => {
   await resetAutoIncrement();
 
@@ -39,7 +47,7 @@ const createNote = async (req, res) => {
   res.status(201).send(await getNoteById(result.insertId));
 };
 
-//Function to update a note
+// Function to update a note
 const updateNote = async (req, res) => {
   const { id } = req.params;
   const { title, contents } = req.body;
@@ -62,7 +70,7 @@ const updateNote = async (req, res) => {
   res.send(await getNoteById(id));
 };
 
-//Function to delete a note
+// Function to delete a note
 const deleteNote = async (req, res) => {
   const { id } = req.params;
 
@@ -85,6 +93,7 @@ const deleteNote = async (req, res) => {
 
 //==============HELPER FUNCTIONS================
 
+// Helper function to get a note by its id
 const getNoteById = async (id) => {
   const [note] = await pool.query(
     `
@@ -97,7 +106,7 @@ const getNoteById = async (id) => {
   return note[0];
 };
 
-//Helper function that resets the auto increment if the notes table is empty
+// Helper function that resets the auto increment if the notes table is empty
 const resetAutoIncrement = async () => {
   const [result] = await pool.query("SELECT * FROM notes");
 
@@ -105,7 +114,5 @@ const resetAutoIncrement = async () => {
     await pool.query("ALTER TABLE notes AUTO_INCREMENT = 1");
   }
 };
-
-//Export the functions
 
 export { getNotes, getNote, createNote, updateNote, deleteNote };
