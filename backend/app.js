@@ -11,12 +11,22 @@ const app = express();
 // Add middleware to parse JSON
 app.use(express.json());
 
-app.use("/notes", notesRouter);
-
+// Middleware to log requests
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
+
+// Middleware to handle errors
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error(err);
+    res.status(500).send({ message: "Something went wrong" });
+  }
+  next();
+});
+
+app.use("/notes", notesRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started on http://localhost:${process.env.PORT}`);
