@@ -1,21 +1,20 @@
 import express from "express";
 
-import { getNotes, getNote, createNote } from "./database.js";
+import notesRouter from "./routes/Notes.js";
 
 // Create the server
 const app = express();
 
-app.get("/notes", (req, res) => {
-  getNotes().then((notes) => {
-    res.json(notes);
-  });
-});
+// Add middleware to parse JSON
+app.use(express.json());
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something went wrong!");
+app.use("/notes", notesRouter);
+
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
 });
 
 app.listen(8080, () => {
-  console.log("Server started on http://localhost:3000");
+  console.log("Server started on http://localhost:8080");
 });
