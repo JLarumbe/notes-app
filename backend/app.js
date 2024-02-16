@@ -1,5 +1,8 @@
 import express from "express";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import notesRouter from "./routes/Notes.js";
 
 // Create the server
@@ -15,6 +18,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(8080, () => {
-  console.log("Server started on http://localhost:8080");
+app.listen(process.env.PORT, () => {
+  console.log(`Server started on http://localhost:${process.env.PORT}`);
 });
