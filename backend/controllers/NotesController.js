@@ -19,11 +19,13 @@ const getNote = async (req, res) => {
      `,
     [id]
   );
-  res.send(note);
+  res.send(note[0]);
 };
 
 //Function to create a note
 const createNote = async (req, res) => {
+  await resetAutoIncrement();
+
   const { title, contents } = req.body;
 
   const [result] = await pool.query(
@@ -79,7 +81,16 @@ const getNoteById = async (id) => {
          `,
     [id]
   );
-  return note;
+  return note[0];
+};
+
+//Helper function that resets the auto increment if the notes table is empty
+const resetAutoIncrement = async () => {
+  const [result] = await pool.query("SELECT * FROM notes");
+
+  if (result.length === 0) {
+    await pool.query("ALTER TABLE notes AUTO_INCREMENT = 1");
+  }
 };
 
 //Export the functions
