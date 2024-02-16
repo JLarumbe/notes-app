@@ -44,6 +44,12 @@ const updateNote = async (req, res) => {
   const { id } = req.params;
   const { title, contents } = req.body;
 
+  const note = await getNoteById(id);
+
+  if (!note) {
+    return res.status(404).send({ message: "Note not found" });
+  }
+
   const [result] = await pool.query(
     `
     UPDATE notes
@@ -60,6 +66,12 @@ const updateNote = async (req, res) => {
 const deleteNote = async (req, res) => {
   const { id } = req.params;
 
+  const note = await getNoteById(id);
+
+  if (!note) {
+    return res.status(404).send({ message: "Note not found" });
+  }
+
   const [result] = await pool.query(
     `
     DELETE FROM notes
@@ -71,7 +83,8 @@ const deleteNote = async (req, res) => {
   res.send({ message: "Note deleted" });
 };
 
-//Helper function to return a note by id
+//==============HELPER FUNCTIONS================
+
 const getNoteById = async (id) => {
   const [note] = await pool.query(
     `
