@@ -10,10 +10,10 @@ const getNotes = async (req, res) => {
 const getNote = async (req, res) => {
   const { id } = req.params;
 
-  // Whats a better name for this variable
-
+  // Check if the note exists
   const isNote = await getNoteById(id);
 
+  // If the note does not exist, return a 404 error
   if (!isNote) {
     return res.status(404).send({ message: "Note not found" });
   }
@@ -27,6 +27,7 @@ const getNote = async (req, res) => {
      `,
     [id]
   );
+
   res.send(note[0]);
 };
 
@@ -52,8 +53,10 @@ const updateNote = async (req, res) => {
   const { id } = req.params;
   const { title, contents } = req.body;
 
+  // Check if the note exists
   const note = await getNoteById(id);
 
+  // If the note does not exist, return a 404 error
   if (!note) {
     return res.status(404).send({ message: "Note not found" });
   }
@@ -74,8 +77,10 @@ const updateNote = async (req, res) => {
 const deleteNote = async (req, res) => {
   const { id } = req.params;
 
+  // Check if the note exists
   const note = await getNoteById(id);
 
+  // If the note does not exist, return a 404 error
   if (!note) {
     return res.status(404).send({ message: "Note not found" });
   }
